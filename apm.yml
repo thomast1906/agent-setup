@@ -1,0 +1,13 @@
+name: personal-agent-toolkit
+version: 0.1.0
+
+targets:
+  - copilot
+  - claude
+  - codex
+
+dependencies:
+  apm:
+    - DietrichGebert/ponytail
+    - obra/superpowers
+    - thomast1906/github-copilot-agent-skills/.github/skills/skill-creator
