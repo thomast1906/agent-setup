@@ -40,19 +40,21 @@ If a global manifest already exists, merge any dependencies you want to keep bef
 
 Global installation makes supported components available across projects. Running `apm install` without `--global` configures only the current project.
 
-After changing this repository’s `apm.yml`, synchronise and install:
+After changing this repository’s `apm.yml`, synchronise, install and copy the updated lock file back:
 
 ```bash
 cp -i ./apm.yml ~/.apm/apm.yml
 apm install --global
+cp ~/.apm/apm.lock.yaml ./apm.lock.yaml
 ```
 
 ## Update
 
-To update all dependencies in your global APM setup:
+To update all dependencies in your global APM setup, then copy the updated lock file back:
 
 ```bash
 apm update --global
+cp ~/.apm/apm.lock.yaml ./apm.lock.yaml
 ```
 
 This checks every repo listed in `~/.apm/apm.yml`, shows the changes and updates the installed components across your configured agents.
@@ -65,6 +67,25 @@ brew upgrade apm
 ```
 
 APM records resolved dependency revisions in `~/.apm/apm.lock.yaml`. Review upstream changes before updating, particularly packages containing executable hooks.
+
+## Lock file
+
+[`apm.lock.yaml`](./apm.lock.yaml) is a copy of the global lock file, recording the exact commit of every installed dependency. After each install or update, copy it back and commit it:
+
+```bash
+cp ~/.apm/apm.lock.yaml ./apm.lock.yaml
+git add apm.lock.yaml && git commit -m "Update APM lock file"
+```
+
+To reproduce the recorded versions on a new machine, or roll back to an earlier commit of this repo:
+
+```bash
+cp -i ./apm.yml ~/.apm/apm.yml
+cp -i ./apm.lock.yaml ~/.apm/apm.lock.yaml
+apm install --global --frozen
+```
+
+`--frozen` refuses to install if the lock file and manifest don't match, rather than silently resolving newer versions.
 
 ## Known issue: Azure Skills
 
